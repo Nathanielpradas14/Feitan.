@@ -1,5 +1,5 @@
 // module.exports.config = {
-//   name: "ai",
+//   name: "ericson",
 //   version: "1.0.5",
 //   hasPermssion: 0,
 //   credits: "Aki Hayakawa",
@@ -55,7 +55,7 @@
 //   }
 
 //   if (!query) {
-//     api.sendMessage("Hi, I am FeitanGPT. How may I help you?", event.threadID, event.messageID);
+//     api.sendMessage("Hi, I am EricsonGPT. How may I help you?", event.threadID, event.messageID);
 //   } else {
 //     api.sendMessage("Generating response ✅", event.threadID, event.messageID);
 //     try {
@@ -106,7 +106,7 @@ const axios = require("axios");
 let fontEnabled = false;
 
 module.exports.config = {
-  name: "ai",
+  name: "ericson",
   version: "1",
   usePrefix: false,
   hasPermission: 0,
@@ -157,18 +157,18 @@ module.exports.handleEvent = async function ({ api, event }) {
   const inputText = args.join(' ');
 
   if (!inputText && (!event.messageReply.attachments[0] || event.messageReply.attachments[0].type !== "photo")) {
-    return api.sendMessage("Hello, I'm Feitan Pro Vision by Ericson. How may I help you?", event.threadID, event.messageID);
+    return api.sendMessage("Hello, I'm Ericson Pro Vision by Ericson. How may I help you?", event.threadID, event.messageID);
   }
 
   if (args[0] === "on") {
     fontEnabled = true;
-    api.sendMessage({ body: "Feitan P-Vision AI Font Formatting Enabled" }, event.threadID, event.messageID);
+    api.sendMessage({ body: "Ericson P-Vision AI Font Formatting Enabled" }, event.threadID, event.messageID);
     return;
   }
 
   if (args[0] === "off") {
     fontEnabled = false;
-    api.sendMessage({ body: "Feitan P-Vision AI Font Formatting Disabled" }, event.threadID, event.messageID);
+    api.sendMessage({ body: "Ericson P-Vision AI Font Formatting Disabled" }, event.threadID, event.messageID);
     return;
   }
 
