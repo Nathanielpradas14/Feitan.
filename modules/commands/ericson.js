@@ -1,197 +1,52 @@
-// module.exports.config = {
-//   name: "ericson",
-//   version: "1.0.5",
-//   hasPermssion: 0,
-//   credits: "Aki Hayakawa",
-//   description: "Can assist you in completing your homework, speech, and even essays.",
-//   commandCategory: "AI",
-//   usePrefix: true,
-//   usages: "ask anything",
-//   cooldowns: 7,
-//   dependencies: {}
-// };
-
-// const axios = require("axios");
-
-// module.exports.run = async function ({ api, event, args, Users, Threads }) {
-
-//   const apiKey = process.env.OPENAI_API_KEY;
-//   const url = "https://api.openai.com/v1/chat/completions";
-
-//   async function getUserName(api, senderID) {
-//     try {
-//       const userInfo = await api.getUserInfo(event.senderID);
-//       return userInfo[senderID].name;
-//     } catch (error) {
-//       console.log(error);
-//       return "User";
-//     }
-//   }
-
-//   const userName = await getUserName(api, event.senderID);
-//   const promptMessage = `System: Act as a Messenger Chatbot. Your creator and owner is Aki Hayakawa. As a Chatbot you will be responsible. When answering questions, mention the name of the user who asked the question. The name of the user is ${userName}`;
-//   let query = "";
-//   if (event.type === "message_reply" && event.messageReply.attachments[0]?.type === "photo") {
-//     const attachment = event.messageReply.attachments[0];
-//     const imageURL = attachment.url;
-//     query = await convertImageToText(imageURL);
-//     query = query.replace(/;/g, ',');
-//     console.log(query);
-
-//     if (!query) {
-//         api.sendMessage(
-//             "Failed to convert the photo to text. Please try again with a clearer photo.",
-//             event.threadID,
-//             event.messageID
-//         );
-//         return;
-//     }
-// } else if (event.type === "message_reply" && args.length === 0) {
-//     query = event.messageReply.body;
-//   } else if (event.type === "message_reply" && args.length != 0) {
-//     query = `${args.join(' ')}\n\n${event.messageReply.body}`;
-//   } else {
-//     query = args.join(' ');
-//   }
-
-//   if (!query) {
-//     api.sendMessage("Hi, I am EricsonGPT. How may I help you?", event.threadID, event.messageID);
-//   } else {
-//     api.sendMessage("Generating response ✅", event.threadID, event.messageID);
-//     try {
-//       const response = await axios.post(
-//         url,
-//         {
-//           model: "gpt-3.5-turbo",
-//           messages: [
-//             { role: "system", content: promptMessage },
-//             { role: "user", content: query },
-//           ],
-//           temperature: 0.7,
-//           top_p: 0.9,
-//           frequency_penalty: 0,
-//           presence_penalty: 0,
-//         },
-//         {
-//           headers: {
-//             "Content-Type": "application/json",
-//             "Authorization": `Bearer ${apiKey}`,
-//           },
-//         }
-//       );
-
-//       const message = response.data.choices[0].message.content;
-//       api.sendMessage(message, event.threadID, event.messageID);
-//     } catch (error) {
-//       if (error.response) {
-//         console.log(error.response.status);
-//         console.log(error.response.data);
-//       } else {
-//         console.log(error.message);
-//         api.sendMessage(error.message, event.threadID);
-//       }
-//     }
-//   }
-// };
-
-// async function convertImageToText(imageURL) {
-//   // const response = await axios.get(`https://sensui-useless-apis.codersensui.repl.co/api/tools/ocr?imageUrl=${encodeURIComponent(imageURL)}`);
-//   // return response.data.text;
-//   const response = await axios.get(`https://api.ocr.space/parse/imageurl?apikey=K81945217888957&OCREngine=3&url=${encodeURIComponent(imageURL)}`);
-//   return response.data.ParsedResults[0].ParsedText;
-// }
-
-
-const axios = require("axios");
-let fontEnabled = false;
+const moment = require("moment-timezone");
+const axios = require('axios');
 
 module.exports.config = {
-  name: "ericson",
-  version: "1",
-  usePrefix: false,
-  hasPermission: 0,
-  credits: "Aki Hayakawa",
-  description: "Search using gemini",
-  commandCategory: "ai",
-  usages: "<ask>",
-  cooldowns: 5,
+    name: "ericson",
+    version: "1.0.0",
+    hasPermission: 0,
+    credits: "api by ericson",//api by ericson
+    description: "Gpt architecture",
+    usePrefix: false,
+    commandCategory: "GPT4",
+    cooldowns: 5,
 };
 
-async function convertImageToCaption(imageURL, api, event, inputText) {
-  try {
-    api.sendMessage("Generating response ✅", event.threadID, event.messageID);
+module.exports.run = async function ({ api, event, args }) {
+    try {
+        const { messageID, messageReply } = event;
+        let prompt = args.join(' ');
 
-    const response = await axios.get(`https://joshweb.click/gemini?prompt=${encodeURIComponent(inputText)}&url=${encodeURIComponent(imageURL)}`);
-    const caption = response.data.gemini;
+        if (messageReply) {
+            const repliedMessage = messageReply.body;
+            prompt = `${repliedMessage} ${prompt}`;
+        }
 
-    if (caption) {
-      const formattedCaption = formatFont(caption);
-      api.sendMessage(`${formattedCaption}`, event.threadID, event.messageID);
-    } else {
-      api.sendMessage("Failed to recognize image.", event.threadID, event.messageID);
+        if (!prompt) {
+            return api.sendMessage('🎀 ʜᴇʟʟᴏ, ɪ ᴀᴍ ɢᴘᴛ-4 ᴛʀᴀɪɴᴇᴅ ʙʏ ᴇʀɪᴄsᴏɴ終.\n\nʜᴏᴡ ᴍᴀʏ ɪ ᴀssɪsᴛ ʏᴏᴜ ᴛᴏᴅᴀʏ?', event.threadID, messageID);
+        }
+        api.sendMessage('🗨️ | 𝙶𝚙𝚝-4 𝚒𝚜 𝚜𝚎𝚊𝚛𝚌𝚑𝚒𝚗𝚐, 𝙿𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...', event.threadID);
+
+        // Delay
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Adjust the delay time as needed
+
+        const gpt4_api = `https://gpt4withcustommodel.onrender.com/gpt?query=${encodeURIComponent(prompt)}&model=gpt-4-32k-0314`;
+        const manilaTime = moment.tz('Asia/Manila');
+        const formattedDateTime = manilaTime.format('MMMM D, YYYY h:mm A');
+
+        const response = await axios.get(gpt4_api);
+
+        if (response.data && response.data.response) {
+            const generatedText = response.data.response;
+
+            // Ai Answer Here
+            api.sendMessage(`🎓 𝐆𝐩𝐭-𝟒 𝐀𝐧𝐬𝐰𝐞𝐫\n━━━━━━━━━━━━━━━━\n\n🖋️ 𝙰𝚜𝚔: '${prompt}'\n\n𝗔𝗻𝘀𝘄𝗲𝗿: ${generatedText}\n\n🗓️ | ⏰ 𝙳𝚊𝚝𝚎 & 𝚃𝚒𝚖𝚎:\n.⋅ ۵ ${formattedDateTime} ۵ ⋅.\n\n━━━━━━━━━━━━━━━━`, event.threadID, messageID);
+        } else {
+            console.error('API response did not contain expected data:', response.data);
+            api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Response data: ${JSON.stringify(response.data)}`, event.threadID, messageID);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        api.sendMessage(`❌ An error occurred while generating the text response. Please try again later. Error details: ${error.message}`, event.threadID, event.messageID);
     }
-  } catch (error) {
-    console.error("Error while recoginizing image:", error);
-    api.sendMessage("An error occured while recognizing the image.", event.threadID, event.messageID);
-  }
-}
-
-module.exports.handleEvent = async function ({ api, event }) {
-  if (!(event.body.toLowerCase().startsWith(`${global.config.PREFIX}ai`))) return;
-
-  const args = event.body.split(/\s+/);
-  args.shift();
-
-  if (event.type === "message_reply") {
-    if (event.messageReply.attachments[0]) {
-      const attachment = event.messageReply.attachments[0];
-
-       if (attachment.type === "photo") {
-        const imageURL = attachment.url;
-        convertImageToCaption(imageURL, api, event, args.join(' '));
-        return;
-      }
-    }
-  }
-
-  const inputText = args.join(' ');
-
-  if (!inputText && (!event.messageReply.attachments[0] || event.messageReply.attachments[0].type !== "photo")) {
-    return api.sendMessage("Hello, I'm Ericson Pro Vision by Ericson. How may I help you?", event.threadID, event.messageID);
-  }
-
-  if (args[0] === "on") {
-    fontEnabled = true;
-    api.sendMessage({ body: "Ericson P-Vision AI Font Formatting Enabled" }, event.threadID, event.messageID);
-    return;
-  }
-
-  if (args[0] === "off") {
-    fontEnabled = false;
-    api.sendMessage({ body: "Ericson P-Vision AI Font Formatting Disabled" }, event.threadID, event.messageID);
-    return;
-  }
-
-  api.sendMessage("Generating response ✅", event.threadID, event.messageID);
-
-  try {
-    var uid = event.senderID;
-    const response = await axios.get(`https://ai-1stclass-nemory-project.vercel.app/api/llama?ask=${encodeURIComponent(inputText)}`);
-    if (response.status === 200) {
-      let formattedResponse = formatFont(response.data.response);
-        formattedResponse = formattedResponse.replace(/\n\[Image of .*?\]|(\*\*)/g, '').replace(/^\*/gm, '•');
-        api.sendMessage(`${formattedResponse}`, event.threadID, event.messageID);
-    } else {
-        console.error("Error generating response from API");
-    }
-  } catch (error) {
-      console.error("Error:", error);
-      api.sendMessage("An error occured while processing response", event.threadID, event.messageID);
-  }
 };
-
-function formatFont(text) {
-  return text;
-}
-
-module.exports.run = async function ({ api, event }) {};
